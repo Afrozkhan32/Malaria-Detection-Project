@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Malaria AI Diagnostics</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="header-container">
+            <h1>🔬 Malaria AI Classifier</h1>
+            <button id="theme-toggle">🌙 Dark Mode</button>
+        </div>
+    </header>
+
+    <main class="container">
+        <section class="education-panel">
+            <h2>About this Tool</h2>
+            <p>This AI model detects Malaria parasites in thin blood smear images using Deep Learning. 
+               It analyzes the cellular structure to identify anomalies with high accuracy.</p>
+        </section>
+
+        <section class="upload-section">
+            <div id="drop-zone" class="drop-zone">
+                <span class="drop-icon">📁</span>
+                <p>Drag & Drop your cell image here or <span class="highlight">Browse</span></p>
+                <input type="file" id="file-input" accept="image/png, image/jpeg" hidden>
+            </div>
+        </section>
+
+        {% if sample_images %}
+        <section class="samples-section">
+            <h2>Try a Sample Image</h2>
+            <p>Select a sample blood smear image to see a demo analysis.</p>
+            <div class="samples-grid">
+                {% for image in sample_images %}
+                <button type="button" class="sample-card" data-sample-url="{{ url_for('static', filename='samples/' ~ image) }}">
+                    <img src="{{ url_for('static', filename='samples/' ~ image) }}" alt="Blood smear demo sample {{ loop.index }}">
+                    <span>Sample {{ loop.index }}</span>
+                    <small>Click to analyze</small>
+                </button>
+                {% endfor %}
+            </div>
+        </section>
+        {% endif %}
+
+        <div id="loading" class="hidden">
+            <div class="spinner"></div>
+            <p>Analyzing cell structure...</p>
+        </div>
+
+        <section id="result-section" class="hidden">
+            <div class="result-card">
+                <h2>Analysis Complete</h2>
+                <h3 id="prediction-text"></h3>
+                <div class="confidence-bar-container">
+                    <div id="confidence-fill" class="confidence-fill"></div>
+                </div>
+                <p id="confidence-text"></p>
+                <p id="interpretation-text" class="interpretation"></p>
+
+                <div class="image-grid">
+                    <div>
+                        <h4>Original Scan</h4>
+                        <img id="original-img" src="" alt="Original">
+                    </div>
+                    <div>
+                        <h4>AI Focus (Grad-CAM)</h4>
+                        <img id="gradcam-img" src="" alt="Grad-CAM">
+                    </div>
+                </div>
+                <button id="download-btn" class="btn">📥 Download PDF Report</button>
+            </div>
+        </section>
+
+        <section class="history-section">
+            <h3>Recent Scans</h3>
+            <div id="history-container" class="history-grid"></div>
+        </section>
+    </main>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
